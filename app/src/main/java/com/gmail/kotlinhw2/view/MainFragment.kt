@@ -1,4 +1,4 @@
-package com.gmail.kotlinhw2.ui.main
+package com.gmail.kotlinhw2.view
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.gmail.kotlinhw2.R
+import com.gmail.kotlinhw2.vievmodel.MainViewModel
 
 class MainFragment : Fragment() {
 
@@ -23,10 +26,21 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val observer = Observer<Any>{a->renderData(a)}
+        viewModel.getData().observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderData(data: Any) {
+        Toast.makeText(context, "data", Toast.LENGTH_SHORT).show()
     }
 
 }
