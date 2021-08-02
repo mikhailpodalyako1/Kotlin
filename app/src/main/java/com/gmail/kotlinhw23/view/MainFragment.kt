@@ -40,7 +40,7 @@ class MainFragment : Fragment() {
     }
 
     private fun renderData(data: Any) {
-        Toast.makeText(context, "dsta", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "data", Toast.LENGTH_SHORT).show()
     }
 
 
