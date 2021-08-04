@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Kotlin HW 2.3</string>
+    <string name="button">Button</string>
+    <string name="city_name">Temperature</string>
+    <string name="temperature_label">Temperature</string>
+    <string name="feels_like_label">Feels like -</string>
+    <string name="city_coordinates">lt/ln: %s, %s</string>
 </resources>
