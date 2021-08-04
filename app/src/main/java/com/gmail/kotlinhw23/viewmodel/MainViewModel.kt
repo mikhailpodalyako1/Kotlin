@@ -2,28 +2,37 @@ package com.gmail.kotlinhw23.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.gmail.kotlinhw23.model.AppState
+import com.gmail.kotlinhw23.model.Repository.Repository
+import com.gmail.kotlinhw23.model.Repository.RepositoryImpl
 import java.lang.Thread.sleep
 
-class MainViewModel
+class MainViewModel(private val repository : Repository = RepositoryImpl())
     : ViewModel() {
 
-    private val liveDataToObserver: MutableLiveData<String> = MutableLiveData()
+    private val liveDataToObserver: MutableLiveData<AppState> = MutableLiveData()
 
     private var counter:Int = 0
 
-        fun getData():LiveData<String>{
+        fun getData():LiveData<AppState>{
             return liveDataToObserver
         }
-
-    fun requestData(data: String){
+    fun getWeatherFromLocaleSource() {
+        liveDataToObserver.value = AppState.Loading
         Thread{
-            sleep(2000)
+            sleep(1000)
             counter++
-            liveDataToObserver.postValue(data + counter)
+            liveDataToObserver.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
         }.start()
     }
 
-    // TODO: Implement the ViewModel
+    fun getWeatherFromRemoteSourse(){
+        liveDataToObserver.value = AppState.Loading
+        Thread{
+            sleep(2000)
+            counter++
+            liveDataToObserver.postValue(AppState.Success(repository.getWeatherFromServer()))
+        }.start()
+    }
 }
