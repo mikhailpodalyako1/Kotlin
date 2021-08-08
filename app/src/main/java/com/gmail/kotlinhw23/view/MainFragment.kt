@@ -14,17 +14,23 @@ import com.gmail.kotlinhw23.model.AppState
 import com.gmail.kotlinhw23.model.data.Weather
 import com.gmail.kotlinhw23.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlin.properties.Delegates
+import kotlin.properties.Delegates.notNull
 
 class MainFragment : Fragment() {
     companion object {
         fun newInstance() = MainFragment()
     }
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by lazy{
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
     private var _binding: MainFragmentBinding? = null
     private val binding
         get() = _binding!!
     private val adapter = MainFragmentAdapter()
     private var isDataSetRus: Boolean = true
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,31 +38,19 @@ class MainFragment : Fragment() {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        adapter.removeOnItemViewClickListener()
-    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter.setOnItemViewClickListener(object: OnItemViewClickListener {
-            override fun onItemViewClick(weather: Weather) {
-                val manager = activity?.supportFragmentManager
-                if (manager != null) {
-                    val bundle = Bundle()
-                    bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
-                    manager.beginTransaction()
-                        .add(R.id.container, DetailsFragment.newInstance(bundle))
+        adapter.setOnItemViewClickListener { weather ->
+                activity?.supportFragmentManager?. apply{
+                        beginTransaction()
+                        .add(R.id.container, DetailsFragment.newInstance(Bundle().apply {
+                            putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
+                         }))
                         .addToBackStack("")
                         .commitAllowingStateLoss()
                 }
             }
-        })
 
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener {
@@ -75,32 +69,26 @@ class MainFragment : Fragment() {
         } else {
             viewModel.getWeatherFromLocaleSourceWorld()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
+        }.also {
+            isDataSetRus = !isDataSetRus
         }
-        isDataSetRus = !isDataSetRus
     }
     private fun renderData(data: AppState) {
         when (data) {
             is AppState.Success -> {
-                val weatherData = data.weatherData
-                binding.loadingLayout.visibility = View.GONE
-                adapter.setWeather(weatherData)
+                binding.loadingLayout.hide()
+                adapter.setWeather(data.weatherData)
             }
             is AppState.Loading -> {
-                binding.loadingLayout.visibility = View.VISIBLE
+                binding.loadingLayout.show()
             }
             is AppState.Error -> {
-                binding.loadingLayout.visibility = View.GONE
-                Snackbar.make(binding.mainFragmentFAB, "Error", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Reload") {
+                binding.loadingLayout.hide()
+                binding.mainFragmentFAB.showSnackBar("Error", "Reload please"){
                         if (isDataSetRus) viewModel.getWeatherFromLocaleSourceRus()
                         else viewModel.getWeatherFromLocaleSourceWorld()
                     }
-                    .show()
             }
         }
-    }
-
-    interface OnItemViewClickListener {
-        fun onItemViewClick(weather: Weather)
     }
 }

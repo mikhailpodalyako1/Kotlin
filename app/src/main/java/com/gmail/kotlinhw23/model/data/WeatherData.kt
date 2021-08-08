@@ -1,7 +1,6 @@
 package com.gmail.kotlinhw23.model.data
 
-fun getWorldCities(): List<Weather>{
-    return listOf(
+fun getWorldCities()= listOf(
         Weather(City("Stambul", 41.0122, 28.97641), 20, 19),
         Weather(City("Singapur", 1.18, 103.51),32, 30),
         Weather(City("NY", 40.7143, -74.006),19, 16),
@@ -15,11 +14,9 @@ fun getWorldCities(): List<Weather>{
         Weather(City("Tokio", 35.6895, 139.692),20, 10),
         Weather(City("Kair", 30.0345, 31.1458),39, 35),
         Weather(City("Amsterdam", 52.374, 4.88969),25, 20),
-    )
-}
+        )
 
-fun getRussianCities(): List<Weather>{
-    return listOf(
+fun getRussianCities() = listOf(
         Weather(City("Moskva", 41.0122, 28.97641), 20, 17),
         Weather(City("SPB", 1.18, 103.51),15, 13),
         Weather(City("Ekaterinburg", 40.7143, -74.006),25, 20),
@@ -33,4 +30,3 @@ fun getRussianCities(): List<Weather>{
         Weather(City("Sochy", 35.6895, 139.692),),
         Weather(City("Krasnodar", 30.0345, 31.1458),32, 27),
     )
-}
