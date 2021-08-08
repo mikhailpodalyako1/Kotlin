@@ -8,31 +8,25 @@ import com.gmail.kotlinhw23.model.Repository.Repository
 import com.gmail.kotlinhw23.model.Repository.RepositoryImpl
 import java.lang.Thread.sleep
 
-class MainViewModel(private val repository : Repository = RepositoryImpl())
-    : ViewModel() {
+class MainViewModel(private val repository: Repository = RepositoryImpl()) :
+    ViewModel() {
 
-    private val liveDataToObserver: MutableLiveData<AppState> = MutableLiveData()
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
 
-    private var counter:Int = 0
+    fun getData(): LiveData<AppState> = liveDataToObserve
+    fun getWeatherFromLocaleSourceRus() = getDataFromLocaleSource(isRussia = true)
 
-        fun getData():LiveData<AppState>{
-            return liveDataToObserver
-        }
-    fun getWeatherFromLocaleSource() {
-        liveDataToObserver.value = AppState.Loading
-        Thread{
-            sleep(1000)
-            counter++
-            liveDataToObserver.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
-        }.start()
-    }
-
-    fun getWeatherFromRemoteSourse(){
-        liveDataToObserver.value = AppState.Loading
-        Thread{
-            sleep(2000)
-            counter++
-            liveDataToObserver.postValue(AppState.Success(repository.getWeatherFromServer()))
+    fun getWeatherFromLocaleSourceWorld() = getDataFromLocaleSource(isRussia = false)
+    private fun getDataFromLocaleSource(isRussia: Boolean) {
+        liveDataToObserve.value = AppState.Loading
+        Thread {
+            sleep(3000)
+            liveDataToObserve.postValue(
+                AppState.Success(
+                    if (isRussia) repository.getWeatherFromLocalStorageRus()
+                    else repository.getWeatherFromLocalStorageWorld()
+                )
+            )
         }.start()
     }
 }
