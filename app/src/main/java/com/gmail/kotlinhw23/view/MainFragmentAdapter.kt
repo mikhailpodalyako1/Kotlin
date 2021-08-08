@@ -11,14 +11,10 @@ class MainFragmentAdapter:
 RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>(){
 
     private var weatherData: List<Weather> = listOf()
-    private var onItemViewClickListener: MainFragment.OnItemViewClickListener? = null
+    private var onItemViewClickListener: (Weather) -> Unit = {}
 
-    fun setOnItemViewClickListener(onItemViewClickListener: MainFragment.OnItemViewClickListener){
+    fun setOnItemViewClickListener(onItemViewClickListener: (Weather) -> Unit){
         this.onItemViewClickListener = onItemViewClickListener
-    }
-
-    fun removeOnItemViewClickListener(){
-        onItemViewClickListener = null
     }
 
     fun setWeather(data: List<Weather>) {
@@ -43,9 +39,11 @@ RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>(){
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(weather: Weather) {
-            binding.mainFragmentRecyclerItemTextView.text = weather.city.city
-            binding.root.setOnClickListener {
-                onItemViewClickListener?.onItemViewClick(weather)
+            binding.apply {
+                mainFragmentRecyclerItemTextView.text = weather.city.city
+                root.setOnClickListener {
+                    onItemViewClickListener(weather)
+                }
             }
         }
     }
