@@ -17,9 +17,9 @@ fun getWorldCities()= listOf(
         )
 
 fun getRussianCities() = listOf(
-        Weather(City("Moskva", 41.0122, 28.97641), 20, 17),
-        Weather(City("SPB", 1.18, 103.51),15, 13),
-        Weather(City("Ekaterinburg", 40.7143, -74.006),25, 20),
+        Weather(City("Moskva", 55.755826, 37.617299900000035), 20, 17),
+        Weather(City("SPB", 59.9342882, 30.335098600000038),15, 13),
+        Weather(City("Ekaterinburg", 56.8389260999999, 60.6057025000001),25, 20),
         Weather(City("Chelyabinsk", 42.2298, 21.0118),24, 19),
         Weather(City("UFA", 44.4323, 26.1063),30, 30),
         Weather(City("Samara", 52.52000, 13.484953),29, 25),
