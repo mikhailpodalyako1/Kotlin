@@ -19,6 +19,7 @@ import com.gmail.kotlinhw23.model.dto.WeatherDto
 import com.gmail.kotlinhw23.viewmodel.DetailsViewModel
 
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import okhttp3.*
 import java.io.IOException
 import kotlin.jvm.Throws
@@ -32,11 +33,9 @@ import kotlin.jvm.Throws
      private var _binding: DetaisFragmentBinding? = null
      private val binding get() = _binding!!
      private lateinit var weatherBundle: Weather
-
      private val viewModel: DetailsViewModel by lazy {
          ViewModelProvider(this).get(DetailsViewModel::class.java)
      }
-
      override fun onCreateView(
          inflater: LayoutInflater,
          container: ViewGroup?,
@@ -56,51 +55,54 @@ import kotlin.jvm.Throws
          viewModel.detailsLiveData.observe(viewLifecycleOwner) { renderData(it) }
          viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
      }
-
-                 private fun renderData(appState: AppState) {
-                     when (appState) {
-                         is AppState.Success -> {
-                             binding.main.show()
-                             binding.loadingLayout.hide()
-                             setWeather(appState.weatherData[0])
-                         }
-                             is AppState.Loading -> {
-                             binding.main.hide()
-                             binding.loadingLayout.show()
-                         }
-                             is AppState.Error -> {
-                             binding.main.show()
-                             binding.loadingLayout.hide()
-                             binding.main.showSnackBar(getString(R.string.error), getString(R.string.reload)) {
-                                 viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
-                             }
-                         }
-                     }
+     private fun renderData(appState: AppState) {
+         when (appState) {
+             is AppState.Success -> {
+                 binding.main.show()
+                 binding.loadingLayout.hide()
+                 setWeather(appState.weatherData[0])
+             }
+             is AppState.Loading -> {
+                 binding.main.hide()
+                 binding.loadingLayout.show()
+             }
+             is AppState.Error -> {
+                 binding.main.show()
+                 binding.loadingLayout.hide()
+                 binding.main.showSnackBar(getString(R.string.error), getString(R.string.reload)) {
+                     viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
                  }
-                         private fun setWeather(weather: Weather) {
-                             with(binding) {
-                                 weatherBundle.city.let { city ->
-                                     cityName.text = city.city
-                                     cityCoordinates.text = String.format(
-                                         getString(R.string.city_coordinates),
-                                         city.lat.toString(),
-                                         city.lon.toString()
-                                     )
-                                 }
-                                 weather.let {
-                                     temperatureValue.text = it.temperature.toString()
-                                     feelsLikeValue.text = it.feelsLike.toString()
-                                     weatherConditions.text = it.condition
-                                 }
-                             }
-                         }
+             }
+         }
+     }
+     private fun setWeather(weather: Weather) {
+         with(binding) {
+             weatherBundle.city.let { city ->
+                 cityName.text = city.city
+                 cityCoordinates.text = String.format(
+                     getString(R.string.city_coordinates),
+                     city.lat.toString(),
+                     city.lon.toString()
+                 )
+             }
+             weather.let {
+                 temperatureValue.text = it.temperature.toString()
+                 feelsLikeValue.text = it.feelsLike.toString()
+                 weatherCondition.text = it.condition
+             }
+             Picasso
+                 .get()
+                 .load("https://freepngimg.com/thumb/city/163970-city-skyline-york-free-transparent-image-hq.png")
+                 .into(headerIcon)
+         }
+     }
 
-                         companion object {
-                             const val BUNDLE_EXTRA = "weather"
-                             fun newInstance(bundle: Bundle): DetailsFragment {
-                                 val fragment = DetailsFragment()
-                                 fragment.arguments = bundle
-                                 return fragment
-                             }
-                         }
-                     }
+     companion object {
+         const val BUNDLE_EXTRA = "weather"
+         fun newInstance(bundle: Bundle): DetailsFragment {
+             val fragment = DetailsFragment()
+             fragment.arguments = bundle
+             return fragment
+         }
+     }
+ }
