@@ -2,10 +2,10 @@ package com.gmail.kotlinhw23.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.gmail.kotlinhw23.app.App.Companion.getHistoryDao
 import com.gmail.kotlinhw23.model.AppState
-import com.gmail.kotlinhw23.model.Repository.DetailsRepository
-import com.gmail.kotlinhw23.model.Repository.DetailsRepositoryImpl
-import com.gmail.kotlinhw23.model.Repository.RemoteDataSource
+import com.gmail.kotlinhw23.model.Repository.*
+import com.gmail.kotlinhw23.model.data.Weather
 import com.gmail.kotlinhw23.model.data.convertDtoToModel
 import com.gmail.kotlinhw23.model.dto.FactDto
 import com.gmail.kotlinhw23.model.dto.WeatherDto
@@ -21,12 +21,17 @@ private const val CORRUPTED_DATA = "Data is not full"
 
 class DetailsViewModel(
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
-    private val detailsRepository: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource())
+    private val detailsRepository: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource()),
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
 ) : ViewModel() {
 
     fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
         detailsLiveData.value = AppState.Loading
         detailsRepository.getWeatherDetailsFromServer(lat, lon, callBack)
+    }
+
+    fun saveCityToDB(weather: Weather){
+        historyRepository.saveEntity(weather)
     }
 
     private val callBack = object : Callback<WeatherDto> {
