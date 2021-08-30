@@ -2,34 +2,26 @@ package com.gmail.kotlinhw23.view
 
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.gmail.kotlinhw23.BuildConfig
 import com.gmail.kotlinhw23.R
 import com.gmail.kotlinhw23.databinding.DetaisFragmentBinding
 import com.gmail.kotlinhw23.model.AppState
 import com.gmail.kotlinhw23.model.data.City
 import com.gmail.kotlinhw23.model.data.Weather
-import com.gmail.kotlinhw23.model.dto.WeatherDto
 import com.gmail.kotlinhw23.viewmodel.DetailsViewModel
-
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import okhttp3.*
-import java.io.IOException
-import kotlin.jvm.Throws
 
 
 private const val TEMP_INVALID = -100
 private const val FEELS_LIKE_INVALID = -100
 private const val PROCESS_ERROR = "Обработка ошибки"
 private const val REQUEST_API_KEY = "X-Yandex-API-Key"
+
 class DetailsFragment : Fragment() {
     private var _binding: DetaisFragmentBinding? = null
     private val binding get() = _binding!!
